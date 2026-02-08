@@ -10,9 +10,21 @@ export const typeDefs = gql`
     origin: String
     image: String
     is_favorite: Boolean
+    comment: String
   }
 
   type Query {
-    characters: [Character!]!
+    characters(
+      name: String
+      species: String
+      status: String
+      gender: String
+      order: String
+    ): [Character!]!
+  }
+
+  type Mutation {
+    toggleFavorite(id: ID!): Character
+    addComment(id: ID!, comment: String!): Character
   }
 `;

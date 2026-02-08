@@ -12,6 +12,10 @@ const Character = sequelize.define('Character', {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
+  comment: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
 });
 
 export default Character;
