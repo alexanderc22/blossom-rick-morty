@@ -1,20 +1,50 @@
+// import redisClient from '../cache/redis.js'; // Desactivado temporalmente
+import { Op } from 'sequelize';
 import Character from '../models/Character.js';
 
 export const resolvers = {
   Query: {
     characters: async (_, args) => {
+      // ======================
+      // Redis cache temporarily disabled
+      // ======================
+      // const cacheKey = `characters:${JSON.stringify(args)}`;
+      // const cached = await redisClient.get(cacheKey);
+      // if (cached) {
+      //   console.log('⚡ Cache hit');
+      //   return JSON.parse(cached);
+      // }
+
       const where = {};
       const order = [];
+      const { name, species, is_favorite } = args;
 
-      if (args.name) where.name = args.name;
-      if (args.species) where.species = args.species;
+      if (name) {
+        where.name = { [Op.like]: `%${name}%` };
+      }
+
+      if (species) {
+        where.species = species;
+      }
+
+      if (is_favorite !== null && is_favorite !== undefined) {
+        where.is_favorite = is_favorite;
+      }
       if (args.status) where.status = args.status;
       if (args.gender) where.gender = args.gender;
+      if (args.origin) where.origin = args.origin;
 
       if (args.order === 'AZ') order.push(['name', 'ASC']);
       if (args.order === 'ZA') order.push(['name', 'DESC']);
 
-      return await Character.findAll({ where, order });
+      const results = await Character.findAll({ where, order });
+
+      // ======================
+      // Redis cache temporarily disabled
+      // ======================
+      // await redisClient.setEx(cacheKey, 3600, JSON.stringify(results));
+
+      return results;
     },
   },
 

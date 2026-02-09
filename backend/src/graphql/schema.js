@@ -19,7 +19,9 @@ export const typeDefs = gql`
       species: String
       status: String
       gender: String
+      origin: String
       order: String
+      is_favorite: Boolean
     ): [Character!]!
   }
 
